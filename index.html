@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¡Sorpresa!</title>
+<style>
+  /* ====== CONFIG RÁPIDA: cambia el nombre si tu video se llama distinto ====== */
+  /* (el <source> está más abajo en el <body>) */
+
+  :root{
+    --bg:#0a0a12; --fg:#f2f3f8; --soft:#9aa0b4;
+    --accent:#ff2e88; --accent2:#7a5bff;
+    --line:#242436;
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --body:"Inter",system-ui,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(900px 500px at 50% -10%, color-mix(in srgb,var(--accent2) 30%, transparent), transparent 70%),
+      var(--bg);
+    color:var(--fg); font-family:var(--body);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:
+      max(20px, env(safe-area-inset-top))
+      max(18px, env(safe-area-inset-right))
+      max(20px, env(safe-area-inset-bottom))
+      max(18px, env(safe-area-inset-left));
+    min-height:100%;
+  }
+
+  /* ---------- Portada (lo que ven antes de tocar) ---------- */
+  #cover{ display:flex; flex-direction:column; align-items:center; gap:22px; max-width:440px; }
+  .kicker{
+    font-family:var(--mono); font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--soft);
+  }
+  h1{
+    font-family:var(--display); font-weight:700; font-size:clamp(30px,9vw,52px);
+    line-height:1.05; letter-spacing:-.02em; text-wrap:balance;
+  }
+  h1 .grad{
+    background:linear-gradient(100deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .tagline{ color:var(--soft); font-size:16px; max-width:34ch; }
+
+  .play{
+    width:92px; height:92px; border-radius:50%; border:none; cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:grid; place-items:center; color:#fff;
+    box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);
+    animation:ring 1.8s infinite;
+  }
+  .play svg{ width:38px; height:38px; margin-left:5px; }
+  @keyframes ring{
+    0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}
+    100%{box-shadow:0 0 0 26px transparent}
+  }
+  @media(prefers-reduced-motion:reduce){ .play{animation:none} }
+  .hint{ font-family:var(--mono); font-size:12px; color:var(--soft); }
+
+  /* ---------- Reproductor ---------- */
+  #stage{ display:none; width:100%; max-width:720px; flex-direction:column; gap:16px; align-items:center; }
+  #stage.on{ display:flex; animation:fade .4s ease both; }
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  video{
+    width:100%; max-width:100%; border-radius:16px; background:#000;
+    border:1px solid var(--line); box-shadow:0 20px 60px -20px rgba(0,0,0,.7);
+  }
+  .reveal{ font-family:var(--display); font-weight:600; font-size:clamp(20px,5vw,28px); }
+  .reveal .grad{ background:linear-gradient(100deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub{ color:var(--soft); font-size:14.5px; max-width:48ch; }
+  .again{
+    font-family:var(--mono); font-size:13px; color:var(--soft);
+    background:transparent; border:1px solid var(--line); border-radius:999px;
+    padding:9px 18px; cursor:pointer;
+  }
+  .again:hover{ color:var(--fg); border-color:var(--accent); }
+
+  /* nota si falta el video */
+  .missing{ display:none; font-family:var(--mono); font-size:12.5px; color:#ffb4c8;
+    background:color-mix(in srgb,var(--accent) 14%,transparent); border:1px dashed var(--accent);
+    border-radius:10px; padding:12px 14px; max-width:46ch; line-height:1.5; }
+</style>
+</head>
+<body>
+
+  <!-- PORTADA -->
+  <section id="cover">
+    <div class="kicker">Alguien te compartió esto</div>
+    <h1>Toca para ver <span class="grad">la sorpresa</span></h1>
+    <p class="tagline">Un clip rápido. Sube el volumen 🔊</p>
+    <button class="play" id="playbtn" type="button" aria-label="Reproducir">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="hint">▶ 0:18</div>
+    <div class="missing" id="missing"></div>
+  </section>
+
+  <!-- REPRODUCTOR -->
+  <section id="stage">
+    <video id="vid" playsinline controls preload="metadata">
+      <!-- ↓↓↓ PON AQUÍ TU VIDEO: deja el archivo junto a este index.html ↓↓↓ -->
+      <source src="rickroll.mp4" type="video/mp4">
+    </video>
+    <div class="reveal">Te <span class="grad">rickrollearon</span> 🎸</div>
+    <p class="sub">Never gonna give you up. Si esto hubiera sido un QR malicioso de verdad, en vez del baile habrías aterrizado en una página pidiéndote tu contraseña. A esto se le llama <b>quishing</b>: phishing por código QR.</p>
+    <button class="again" id="again" type="button">↺ Otra vez</button>
+  </section>
+
+<script>
+(function(){
+  "use strict";
+  var cover = document.getElementById("cover");
+  var stage = document.getElementById("stage");
+  var vid   = document.getElementById("vid");
+  var miss  = document.getElementById("missing");
+
+  function go(){
+    cover.style.display = "none";
+    stage.classList.add("on");
+    vid.muted = false;
+    var p = vid.play();
+    if (p && p.catch) p.catch(function(){ /* el usuario le dará play manual con los controles */ });
+    vid.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  document.getElementById("playbtn").addEventListener("click", go);
+
+  document.getElementById("again").addEventListener("click", function(){
+    vid.pause(); vid.currentTime = 0;
+    stage.classList.remove("on");
+    cover.style.display = "flex";
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  // Aviso amable si el video aún no existe (te ayuda al montar el sitio)
+  vid.addEventListener("error", showMissing, true);
+  vid.querySelector("source").addEventListener("error", showMissing);
+  function showMissing(){
+    miss.style.display = "block";
+    miss.textContent = "⚠ No encuentro el video. Coloca tu archivo (ej. rickroll.mp4) en la MISMA carpeta que este index.html, o cambia el nombre en la línea <source src=\"…\"> del archivo.";
+  }
+})();
+</script>
+</body>
+</html>
