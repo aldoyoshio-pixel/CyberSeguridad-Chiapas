@@ -1,151 +1,525 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>¡Guía de ciber seguridad!</title>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Anatomía de un Anzuelo</title>
 <style>
-  /* ====== CONFIG RÁPIDA: cambia el nombre si tu video se llama distinto ====== */
-  /* (el <source> está más abajo en el <body>) */
-
-  :root{
-    --bg:#0a0a12; --fg:#f2f3f8; --soft:#9aa0b4;
-    --accent:#ff2e88; --accent2:#7a5bff;
-    --line:#242436;
-    --display:"Space Grotesk",system-ui,sans-serif;
-    --body:"Inter",system-ui,sans-serif;
-    --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  /* Layout: página de dos actos — el cebo a pantalla simple, luego el desmontaje en bloques apilados */
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #eceef2;
+    --fg: #16181d;
+    --fg-soft: #5a616e;
+    --line: #d9dce3;
+    --accent: #2b6cff;        /* azul "confiable" tipo botón corporativo */
+    --danger: #d4342c;        /* rojo bandera */
+    --danger-soft: #fbeae9;
+    --warn: #b06f00;
+    --warn-soft: #fcf2dd;
+    --ok: #1a7f4b;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --display: "Space Grotesk", system-ui, sans-serif;
+    --body: "Inter", system-ui, sans-serif;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1014;
+      --surface: #171a21;
+      --surface-2: #1f232c;
+      --fg: #eef0f4;
+      --fg-soft: #9aa2b1;
+      --line: #2a2f3a;
+      --accent: #5b8cff;
+      --danger: #ff6b61;
+      --danger-soft: #2a1715;
+      --warn: #e0a53a;
+      --warn-soft: #2a2110;
+      --ok: #4cc585;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1014;
+    --surface: #171a21;
+    --surface-2: #1f232c;
+    --fg: #eef0f4;
+    --fg-soft: #9aa2b1;
+    --line: #2a2f3a;
+    --accent: #5b8cff;
+    --danger: #ff6b61;
+    --danger-soft: #2a1715;
+    --warn: #e0a53a;
+    --warn-soft: #2a2110;
+    --ok: #4cc585;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.15; margin: 0; }
+  .wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left,0px)); padding-right: max(16px, env(safe-area-inset-right,0px)); }
+
+  /* ---------- Barra de modo ---------- */
+  .modebar {
+    position: sticky; top: env(safe-area-inset-top,0px); z-index: 50;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .modebar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; }
+  .modebar .tag { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-soft); }
+  .modebar .tag b { color: var(--accent); }
+  .themebtn { font-family: var(--mono); font-size: 11px; background: var(--surface-2); color: var(--fg-soft); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+  .themebtn:hover { color: var(--fg); }
+
+  /* ====================================================== */
+  /* ACTO 1 — EL CEBO (imita una landing de phishing)       */
+  /* ====================================================== */
+  #bait {
     background:
-      radial-gradient(900px 500px at 50% -10%, color-mix(in srgb,var(--accent2) 30%, transparent), transparent 70%),
+      radial-gradient(1200px 600px at 50% -200px, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
       var(--bg);
-    color:var(--fg); font-family:var(--body);
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    text-align:center;
-    padding:
-      max(20px, env(safe-area-inset-top))
-      max(18px, env(safe-area-inset-right))
-      max(20px, env(safe-area-inset-bottom))
-      max(18px, env(safe-area-inset-left));
-    min-height:100%;
+    border-bottom: 1px solid var(--line);
+  }
+  #bait .wrap { padding-block: 54px 64px; text-align: center; }
+
+  .fakebrand { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 26px; }
+  .fakebrand .logo {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: linear-gradient(135deg, var(--accent), #8a4bff);
+    display: grid; place-items: center; color: #fff; font-family: var(--display); font-weight: 700; font-size: 17px;
+  }
+  .fakebrand .name { font-family: var(--display); font-weight: 600; font-size: 16px; letter-spacing: -.01em; }
+  .fakebrand .name span { color: var(--fg-soft); font-weight: 400; }
+
+  .urgency {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--danger-soft); color: var(--danger);
+    border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    padding: 6px 13px; border-radius: 999px; margin-bottom: 22px;
+  }
+  .urgency .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--danger); animation: pulse 1.1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
+  @media (prefers-reduced-motion: reduce) { .urgency .dot { animation: none; } }
+
+  #bait h1 { font-size: clamp(30px, 7vw, 46px); font-weight: 700; letter-spacing: -.02em; margin-bottom: 14px; }
+  #bait h1 .hl { color: var(--accent); }
+  #bait .sub { font-size: clamp(16px, 2.6vw, 19px); color: var(--fg-soft); max-width: 44ch; margin: 0 auto 30px; }
+
+  .cta {
+    font-family: var(--display); font-weight: 600; font-size: 17px;
+    background: var(--accent); color: #fff; border: none;
+    padding: 15px 34px; border-radius: 12px; cursor: pointer;
+    box-shadow: 0 10px 28px -10px color-mix(in srgb, var(--accent) 80%, transparent);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .cta:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -12px color-mix(in srgb, var(--accent) 85%, transparent); }
+  .cta:active { transform: translateY(0); }
+
+  .reassure { margin-top: 18px; font-size: 12.5px; color: var(--fg-soft); font-family: var(--mono); }
+  .reassure .lock { color: var(--ok); }
+
+  .fakeurl {
+    margin: 28px auto 0; max-width: 420px;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 9px;
+    padding: 9px 12px; font-family: var(--mono); font-size: 12.5px; color: var(--fg-soft);
+    overflow: hidden;
+  }
+  .fakeurl .lock { color: var(--ok); flex: none; }
+  .fakeurl .u { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .fakeurl .u b { color: var(--fg); }
+
+  /* ====================================================== */
+  /* ACTO 2 — EL REVEAL                                     */
+  /* ====================================================== */
+  #reveal { display: none; }
+  #reveal.show { display: block; animation: fadein .5s ease both; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .reveal-hero {
+    background: linear-gradient(135deg, #8a4bff 0%, #2b6cff 55%, #d4342c 120%);
+    color: #fff; text-align: center; padding-block: 48px;
+    border-bottom: 1px solid var(--line);
+  }
+  .reveal-hero .boom { font-family: var(--mono); font-size: 12px; letter-spacing: .25em; text-transform: uppercase; opacity: .85; }
+  .reveal-hero h2 { font-size: clamp(26px, 6vw, 40px); color: #fff; margin: 10px 0 8px; }
+  .reveal-hero p { max-width: 42ch; margin: 0 auto; opacity: .92; font-size: 15.5px; }
+
+  .rick {
+    width: min(360px, 78vw); aspect-ratio: 1; margin: 26px auto 0;
+    border-radius: 16px; border: 3px solid rgba(255,255,255,.5);
+    background: #111; display: grid; place-items: center; overflow: hidden; position: relative;
+  }
+  .rick canvas { width: 100%; height: 100%; display: block; }
+  .rick .caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,.55); color: #fff; font-family: var(--mono);
+    font-size: 11.5px; padding: 7px; text-align: center; letter-spacing: .04em;
   }
 
-  /* ---------- Portada (lo que ven antes de tocar) ---------- */
-  #cover{ display:flex; flex-direction:column; align-items:center; gap:22px; max-width:440px; }
-  .kicker{
-    font-family:var(--mono); font-size:12px; letter-spacing:.22em; text-transform:uppercase;
-    color:var(--soft);
-  }
-  h1{
-    font-family:var(--display); font-weight:700; font-size:clamp(30px,9vw,52px);
-    line-height:1.05; letter-spacing:-.02em; text-wrap:balance;
-  }
-  h1 .grad{
-    background:linear-gradient(100deg,var(--accent),var(--accent2));
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .tagline{ color:var(--soft); font-size:16px; max-width:34ch; }
+  /* ---------- Autopsia ---------- */
+  .section { padding-block: 44px; }
+  .eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .section h2 { font-size: clamp(22px, 4.5vw, 30px); margin-bottom: 10px; }
+  .section .lead { color: var(--fg-soft); max-width: 60ch; margin-bottom: 26px; font-size: 15.5px; }
 
-  .play{
-    width:92px; height:92px; border-radius:50%; border:none; cursor:pointer;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    display:grid; place-items:center; color:#fff;
-    box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);
-    animation:ring 1.8s infinite;
+  .flags { display: grid; gap: 14px; }
+  .flag {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 13px;
+    padding: 18px 18px 18px 20px; position: relative; overflow: hidden;
   }
-  .play svg{ width:38px; height:38px; margin-left:5px; }
-  @keyframes ring{
-    0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}
-    100%{box-shadow:0 0 0 26px transparent}
-  }
-  @media(prefers-reduced-motion:reduce){ .play{animation:none} }
-  .hint{ font-family:var(--mono); font-size:12px; color:var(--soft); }
+  .flag::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--danger); }
+  .flag .n { font-family: var(--mono); font-size: 12px; color: var(--danger); font-weight: 700; }
+  .flag h3 { font-size: 17px; margin: 4px 0 7px; display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .flag .what { color: var(--fg); font-size: 14.5px; margin-bottom: 9px; }
+  .flag .how { color: var(--fg-soft); font-size: 13.5px; border-top: 1px dashed var(--line); padding-top: 9px; }
+  .flag .how b { color: var(--ok); }
+  .chip { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; padding: 3px 8px; border-radius: 6px; background: var(--danger-soft); color: var(--danger); font-weight: 600; }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); }
 
-  /* ---------- Reproductor ---------- */
-  #stage{ display:none; width:100%; max-width:720px; flex-direction:column; gap:16px; align-items:center; }
-  #stage.on{ display:flex; animation:fade .4s ease both; }
-  @keyframes fade{from{opacity:0}to{opacity:1}}
-  video{
-    width:100%; max-width:100%; border-radius:16px; background:#000;
-    border:1px solid var(--line); box-shadow:0 20px 60px -20px rgba(0,0,0,.7);
-  }
-  .reveal{ font-family:var(--display); font-weight:600; font-size:clamp(20px,5vw,28px); }
-  .reveal .grad{ background:linear-gradient(100deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .sub{ color:var(--soft); font-size:14.5px; max-width:48ch; }
-  .again{
-    font-family:var(--mono); font-size:13px; color:var(--soft);
-    background:transparent; border:1px solid var(--line); border-radius:999px;
-    padding:9px 18px; cursor:pointer;
-  }
-  .again:hover{ color:var(--fg); border-color:var(--accent); }
+  /* ---------- Comparativa phishing real ---------- */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .compare { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 13px; padding: 18px; }
+  .card.safe { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
+  .card.bad  { border-color: color-mix(in srgb, var(--danger) 45%, var(--line)); }
+  .card h3 { font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .card.safe h3 { color: var(--ok); }
+  .card.bad h3 { color: var(--danger); }
+  .card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+  .card li { font-size: 13.5px; color: var(--fg-soft); padding-left: 22px; position: relative; }
+  .card li::before { position: absolute; left: 0; top: 0; font-family: var(--mono); font-weight: 700; }
+  .card.safe li::before { content: "✓"; color: var(--ok); }
+  .card.bad li::before { content: "✕"; color: var(--danger); }
 
-  /* nota si falta el video */
-  .missing{ display:none; font-family:var(--mono); font-size:12.5px; color:#ffb4c8;
-    background:color-mix(in srgb,var(--accent) 14%,transparent); border:1px dashed var(--accent);
-    border-radius:10px; padding:12px 14px; max-width:46ch; line-height:1.5; }
+  /* ---------- Checklist ---------- */
+  .checklist { background: var(--surface); border: 1px solid var(--line); border-radius: 13px; padding: 6px 18px; }
+  .checklist label { display: flex; align-items: flex-start; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 14.5px; }
+  .checklist label:last-child { border-bottom: none; }
+  .checklist input { margin-top: 3px; width: 17px; height: 17px; accent-color: var(--accent); flex: none; cursor: pointer; }
+  .checklist label .q b { color: var(--fg); }
+  .checklist label .q span { color: var(--fg-soft); display: block; font-size: 12.5px; margin-top: 2px; }
+  .score { margin-top: 16px; font-family: var(--mono); font-size: 13px; color: var(--fg-soft); text-align: center; }
+  .score b { color: var(--accent); }
+
+  .replay { display: flex; justify-content: center; margin-top: 8px; }
+  .replay button { font-family: var(--mono); font-size: 12.5px; background: var(--surface-2); color: var(--fg-soft); border: 1px solid var(--line); border-radius: 999px; padding: 9px 18px; cursor: pointer; }
+  .replay button:hover { color: var(--fg); border-color: var(--accent); }
+
+  footer { border-top: 1px solid var(--line); padding-block: 26px; color: var(--fg-soft); font-size: 12.5px; text-align: center; }
+  footer .wrap { display: grid; gap: 6px; }
+  footer code { font-family: var(--mono); background: var(--surface-2); padding: 2px 6px; border-radius: 5px; color: var(--fg); }
 </style>
-</head>
-<body>
 
-  <!-- PORTADA -->
-  <section id="cover">
-    <div class="kicker">Alguien te compartió esto</div>
-    <h1>Toca para ver <span class="grad">la sorpresa</span></h1>
-    <p class="tagline">Un clip rápido. Sube el volumen 🔊</p>
-    <button class="play" id="playbtn" type="button" aria-label="Reproducir">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-    </button>
-    <div class="hint">▶ 0:18</div>
-    <div class="missing" id="missing"></div>
-  </section>
+<div class="modebar">
+  <div class="wrap">
+    <div class="tag">Demo educativo · <b>Concientización anti-phishing</b></div>
+    <button class="themebtn" id="themebtn" type="button">tema</button>
+  </div>
+</div>
 
-  <!-- REPRODUCTOR -->
-  <section id="stage">
-    <video id="vid" playsinline controls preload="metadata">
-      <!-- ↓↓↓ PON AQUÍ TU VIDEO: deja el archivo junto a este index.html ↓↓↓ -->
-      <source src="m2-res_480p.mp4" type="video/mp4">
-    </video>
-    <div class="reveal">Te <span class="grad">rickrollearon</span> 🎸</div>
-    <p class="sub">Never gonna give you up. Si esto hubiera sido un QR malicioso de verdad, en vez del baile habrías aterrizado en una página pidiéndote tu contraseña. A esto se le llama <b>quishing</b>: phishing por código QR.</p>
-    <button class="again" id="again" type="button">↺ Otra vez</button>
-  </section>
+<!-- ============ ACTO 1: EL CEBO ============ -->
+<section id="bait">
+  <div class="wrap">
+    <div class="fakebrand">
+      <div class="logo">C</div>
+      <div class="name">Cloud<span>Drive</span></div>
+    </div>
+
+    <div class="urgency"><span class="dot"></span> Tu cuenta expira en 23:59:47</div>
+
+    <h1>Recuperaste <span class="hl">4 archivos eliminados</span></h1>
+    <p class="sub">Detectamos documentos recuperables en tu papelera. Confirma tu identidad ahora para restaurarlos antes de que se borren permanentemente.</p>
+
+    <button class="cta" id="baitbtn" type="button">Restaurar mis archivos →</button>
+
+    <div class="reassure"><span class="lock">🔒</span> Conexión segura · Verificado por CloudDrive™</div>
+
+    <div class="fakeurl">
+      <span class="lock">🔒</span>
+      <span class="u">https://clouddrive<b>-recovery-secure</b>.verify-login<b>.co</b>/restore?id=u8f2</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACTO 2: EL REVEAL + AUTOPSIA ============ -->
+<section id="reveal">
+  <div class="reveal-hero">
+    <div class="boom">Te rickrollearon</div>
+    <h2>Never gonna give you up 🎵</h2>
+    <p>No había archivos. No había cuenta. Nada de lo que viste era real — y aun así, probablemente diste clic. Eso es exactamente lo que busca un sitio de phishing. Vamos a diseccionarlo.</p>
+    <div class="rick">
+      <canvas id="rickcanvas" width="360" height="360" aria-label="Animación de Rick Astley bailando"></canvas>
+      <div class="caption">♪ ...never gonna let you down ♪</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="eyebrow">La autopsia</div>
+      <h2>Las 5 banderas rojas que ignoraste</h2>
+      <p class="lead">Cada elemento de la página anterior fue puesto a propósito para empujarte a dar clic sin pensar. Estas son las mismas palancas que usan los correos y sitios de ingeniería social de verdad.</p>
+
+      <div class="flags" id="flags"></div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow">El contraste</div>
+      <h2>Legítimo vs. anzuelo</h2>
+      <p class="lead">La misma notificación, contada por un servicio real y por un atacante. La diferencia casi nunca está en el diseño: está en la presión y en el destino del enlace.</p>
+      <div class="compare">
+        <div class="card safe">
+          <h3>✉️ Un aviso real</h3>
+          <ul>
+            <li>Te habla por tu nombre real registrado</li>
+            <li>No impone un reloj de cuenta regresiva</li>
+            <li>El dominio es el oficial, sin sufijos raros</li>
+            <li>Te pide entrar tú mismo al sitio, no por su enlace</li>
+            <li>No amenaza con borrar nada en segundos</li>
+          </ul>
+        </div>
+        <div class="card bad">
+          <h3>🎣 El anzuelo</h3>
+          <ul>
+            <li>Saludo genérico: "tu cuenta", "estimado usuario"</li>
+            <li>Urgencia artificial con temporizador</li>
+            <li>Dominio disfrazado: <code style="font-size:11px">verify-login.co</code></li>
+            <li>Un botón que hace todo por ti</li>
+            <li>Consecuencia catastrófica e inmediata</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="eyebrow">Antes de dar clic</div>
+      <h2>Tu checklist de 6 segundos</h2>
+      <p class="lead">Marca lo que aplique al siguiente enlace sospechoso que te llegue. Si marcas una sola casilla, detente.</p>
+      <div class="checklist" id="checklist"></div>
+      <div class="score" id="score">Marca las señales que detectes…</div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-top:0">
+    <div class="wrap replay">
+      <button id="replaybtn" type="button">↺ Ver el cebo otra vez</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>Construido como ejemplo de laboratorio. El "engaño" aquí es inofensivo: termina en Rick Astley, no en un robo de credenciales.</div>
+    <div>Ningún dato se envía ni se guarda. El formulario de arriba es decorativo.</div>
+  </div>
+</footer>
 
 <script>
-(function(){
+(function () {
   "use strict";
-  var cover = document.getElementById("cover");
-  var stage = document.getElementById("stage");
-  var vid   = document.getElementById("vid");
-  var miss  = document.getElementById("missing");
 
-  function go(){
-    cover.style.display = "none";
-    stage.classList.add("on");
-    vid.muted = false;
-    var p = vid.play();
-    if (p && p.catch) p.catch(function(){ /* el usuario le dará play manual con los controles */ });
-    vid.scrollIntoView({behavior:"smooth", block:"center"});
-  }
-  document.getElementById("playbtn").addEventListener("click", go);
-
-  document.getElementById("again").addEventListener("click", function(){
-    vid.pause(); vid.currentTime = 0;
-    stage.classList.remove("on");
-    cover.style.display = "flex";
-    window.scrollTo({top:0, behavior:"smooth"});
+  // ---------- Tema ----------
+  var root = document.documentElement;
+  document.getElementById("themebtn").addEventListener("click", function () {
+    var cur = root.getAttribute("data-theme");
+    var isDark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.setAttribute("data-theme", isDark ? "light" : "dark");
   });
 
-  // Aviso amable si el video aún no existe (te ayuda al montar el sitio)
-  vid.addEventListener("error", showMissing, true);
-  vid.querySelector("source").addEventListener("error", showMissing);
-  function showMissing(){
-    miss.style.display = "block";
-    miss.textContent = "⚠ No encuentro el video. Coloca tu archivo (ej. rickroll.mp4) en la MISMA carpeta que este index.html, o cambia el nombre en la línea <source src=\"…\"> del archivo.";
+  // ---------- Datos de la autopsia ----------
+  var flags = [
+    {
+      chip: "Urgencia", warn: false,
+      title: "El reloj en cuenta regresiva",
+      what: "“Tu cuenta expira en 23:59:47.” Un temporizador que corre te obliga a actuar con el sistema rápido del cerebro y apaga el juicio.",
+      how: "Ningún servicio legítimo borra tus datos en segundos. La prisa es la herramienta; respira y verifica por otro canal."
+    },
+    {
+      chip: "Pretexto", warn: false,
+      title: "La recompensa que no pediste",
+      what: "“Recuperaste 4 archivos eliminados.” Te ofrece algo valioso que no solicitaste para que la curiosidad gane sobre la sospecha.",
+      how: "Si tú no iniciaste la acción, el mensaje la inició por ti. Eso casi siempre es el gancho."
+    },
+    {
+      chip: "Dominio falso", warn: false,
+      title: "La URL disfrazada",
+      what: "clouddrive-recovery-secure.verify-login.co: lleva la marca real al principio, pero el dominio verdadero es verify-login.co, no clouddrive.",
+      how: "Lee la URL de derecha a izquierda. El dominio real es lo que está justo antes de la primera barra: ahí vive la verdad."
+    },
+    {
+      chip: "Candado engañoso", warn: true,
+      title: "El 🔒 que no significa nada",
+      what: "“Conexión segura” y el candadito te dan falsa confianza. HTTPS solo cifra el tráfico; no dice que el sitio sea honesto.",
+      how: "Un phishing también puede tener candado. El cifrado protege el canal, no tu identidad."
+    },
+    {
+      chip: "Botón-trampa", warn: true,
+      title: "El botón que hace todo por ti",
+      what: "“Restaurar mis archivos” concentra toda la acción en un clic grande y brillante, para que no te detengas a leer a dónde va.",
+      how: "Pasa el cursor sobre cualquier botón y revisa el destino antes de tocarlo. Un clic es irreversible."
+    }
+  ];
+
+  var fc = document.getElementById("flags");
+  flags.forEach(function (f, i) {
+    var el = document.createElement("div");
+    el.className = "flag";
+    el.innerHTML =
+      '<div class="n">BANDERA 0' + (i + 1) + '</div>' +
+      '<h3>' + f.title + ' <span class="chip' + (f.warn ? ' warn' : '') + '">' + f.chip + '</span></h3>' +
+      '<div class="what">' + f.what + '</div>' +
+      '<div class="how"><b>Qué hacer →</b> ' + f.how + '</div>';
+    fc.appendChild(el);
+  });
+
+  // ---------- Checklist ----------
+  var items = [
+    { q: "¿Me mete prisa o me amenaza?", s: "Temporizadores, “acción requerida”, “tu cuenta será suspendida”." },
+    { q: "¿Me saluda de forma genérica?", s: "“Estimado usuario”, “hola” a secas, sin tu nombre real." },
+    { q: "¿El dominio se ve raro?", s: "Sufijos extra, guiones, dominios .co/.xyz imitando al oficial." },
+    { q: "¿Me ofrece algo que no pedí?", s: "Premios, reembolsos, archivos recuperados, paquetes pendientes." },
+    { q: "¿Me pide datos sensibles por el enlace?", s: "Contraseñas, OTP, tarjeta, directamente desde el correo." },
+    { q: "¿Hay errores o algo que no cuadra?", s: "Logos pixeleados, redacción extraña, remitente que no coincide." }
+  ];
+  var cl = document.getElementById("checklist");
+  var scoreEl = document.getElementById("score");
+  items.forEach(function (it, i) {
+    var lab = document.createElement("label");
+    lab.innerHTML =
+      '<input type="checkbox" id="chk' + i + '">' +
+      '<span class="q"><b>' + it.q + '</b><span>' + it.s + '</span></span>';
+    cl.appendChild(lab);
+  });
+  cl.addEventListener("change", function () {
+    var n = cl.querySelectorAll("input:checked").length;
+    if (n === 0) scoreEl.innerHTML = "Marca las señales que detectes…";
+    else if (n <= 2) scoreEl.innerHTML = "<b>" + n + " señal(es).</b> Con una basta para desconfiar. No des clic.";
+    else scoreEl.innerHTML = "<b>" + n + " señales.</b> Esto es casi con certeza un anzuelo. Bórralo y repórtalo.";
+  });
+
+  // ---------- Transición cebo → reveal ----------
+  var bait = document.getElementById("bait");
+  var reveal = document.getElementById("reveal");
+  function trigger() {
+    bait.style.display = "none";
+    reveal.classList.add("show");
+    startRick();
+    reveal.scrollIntoView({ behavior: "smooth" });
+  }
+  document.getElementById("baitbtn").addEventListener("click", trigger);
+  document.getElementById("replaybtn").addEventListener("click", function () {
+    reveal.classList.remove("show");
+    bait.style.display = "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // ---------- Rick dibujado en canvas (sin IP externa) ----------
+  var started = false;
+  function startRick() {
+    if (started) return; started = true;
+    var cv = document.getElementById("rickcanvas");
+    var ctx = cv.getContext("2d");
+    var W = 360, H = 360, t = 0;
+    var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function frame() {
+      t += 0.08;
+      var sway = reduce ? 0 : Math.sin(t) * 10;
+      var bob = reduce ? 0 : Math.abs(Math.sin(t * 2)) * 6;
+      ctx.clearRect(0, 0, W, H);
+
+      // fondo escenario
+      var g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, "#2a1458"); g.addColorStop(1, "#0a0a14");
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      // reflectores
+      if (!reduce) {
+        for (var i = 0; i < 3; i++) {
+          ctx.save();
+          ctx.globalAlpha = 0.12 + 0.05 * Math.sin(t + i);
+          ctx.fillStyle = ["#ff5bd0", "#5bc8ff", "#ffe15b"][i];
+          ctx.beginPath();
+          ctx.moveTo(60 + i * 120, 0);
+          ctx.lineTo(30 + i * 120 + sway, H);
+          ctx.lineTo(120 + i * 120 + sway, H);
+          ctx.closePath(); ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      ctx.save();
+      ctx.translate(W / 2 + sway, H / 2 + 20 - bob);
+
+      // traje
+      ctx.fillStyle = "#1b1b22";
+      ctx.beginPath(); ctx.roundRect(-42, 0, 84, 110, 14); ctx.fill();
+      // gabardina solapas
+      ctx.fillStyle = "#2d2d38";
+      ctx.beginPath(); ctx.moveTo(-42, 0); ctx.lineTo(-10, 0); ctx.lineTo(-20, 70); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(42, 0); ctx.lineTo(10, 0); ctx.lineTo(20, 70); ctx.closePath(); ctx.fill();
+      // playera negra
+      ctx.fillStyle = "#111"; ctx.beginPath(); ctx.moveTo(-10,0); ctx.lineTo(10,0); ctx.lineTo(6,55); ctx.lineTo(-6,55); ctx.closePath(); ctx.fill();
+
+      // brazos (bailando)
+      ctx.strokeStyle = "#1b1b22"; ctx.lineWidth = 20; ctx.lineCap = "round";
+      var arm = reduce ? 0.5 : (Math.sin(t * 2) * 0.6);
+      ctx.beginPath(); ctx.moveTo(-36, 14); ctx.lineTo(-64, 40 + arm * 30); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(36, 14); ctx.lineTo(64, 40 - arm * 30); ctx.stroke();
+      // manos
+      ctx.fillStyle = "#e8b48a";
+      ctx.beginPath(); ctx.arc(-64, 40 + arm * 30, 8, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.arc(64, 40 - arm * 30, 8, 0, 7); ctx.fill();
+
+      // cuello + cara
+      ctx.fillStyle = "#e8b48a";
+      ctx.beginPath(); ctx.roundRect(-9, -18, 18, 22, 5); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(0, -46, 30, 34, 0, 0, 7); ctx.fill();
+      // pelo copete rojo
+      ctx.fillStyle = "#d4642c";
+      ctx.beginPath(); ctx.ellipse(0, -62, 32, 22, 0, Math.PI, 0); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-30, -58); ctx.quadraticCurveTo(-6, -92, 18, -64); ctx.quadraticCurveTo(0, -74, -30, -58); ctx.fill();
+      // patillas
+      ctx.fillStyle = "#c2551f";
+      ctx.fillRect(-30, -52, 7, 20); ctx.fillRect(23, -52, 7, 20);
+      // ojos
+      ctx.fillStyle = "#1b1b22";
+      ctx.beginPath(); ctx.arc(-11, -46, 3, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.arc(11, -46, 3, 0, 7); ctx.fill();
+      // sonrisa
+      ctx.strokeStyle = "#1b1b22"; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(0, -36, 11, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+
+      ctx.restore();
+
+      // notas musicales flotando
+      if (!reduce) {
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.font = "22px serif";
+        for (var k = 0; k < 3; k++) {
+          var ny = (H - ((t * 30 + k * 90) % (H + 40)));
+          var nx = 70 + k * 100 + Math.sin(t + k) * 18;
+          ctx.globalAlpha = Math.max(0, ny / H);
+          ctx.fillText(k % 2 ? "♫" : "♪", nx, ny);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      requestAnimationFrame(frame);
+    }
+    frame();
   }
 })();
 </script>
-</body>
-</html>
+
+</body></html>
